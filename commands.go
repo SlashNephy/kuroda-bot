@@ -88,8 +88,13 @@ var commands = []*DiscordCommand{
 							slog.String("content", line),
 						)
 
-						for _, mention := range m.Mentions {
-							debts[mention.Mention()] = append(debts[mention.Mention()], DebtData{
+						for _, user := range m.Mentions {
+							// 行にメンションが含まれている場合だけ集計
+							if !strings.Contains(line, user.Mention()) {
+								continue
+							}
+
+							debts[user.Mention()] = append(debts[user.Mention()], DebtData{
 								Amount: amount,
 								Label:  label,
 							})
