@@ -1,30 +1,37 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
 	"golang.org/x/exp/slog"
+
+	"github.com/SlashNephy/kuroda-bot/commands"
+	"github.com/SlashNephy/kuroda-bot/config"
 )
 
 func main() {
-	config, err := LoadConfig()
+	cfg, err := config.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
 
-	session, err := discordgo.New("Bot " + config.DiscordBotToken)
+	session, err := discordgo.New(fmt.Sprintf("Bot %s", cfg.DiscordBotToken))
 	if err != nil {
 		panic(err)
 	}
 
 	session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
-		slog.Info("successfully logged in", slog.String("username", s.State.User.Username), slog.String("discriminator", s.State.User.Discriminator))
+		slog.Info("successfully logged in",
+			slog.String("username", s.State.User.Username),
+			slog.String("discriminator", s.State.User.Discriminator),
+		)
 	})
 
 	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		for _, c := range commands {
+		for _, c := range commands.Commands {
 			if c.Command.Name == i.ApplicationCommandData().Name {
 				if err = c.Handler(s, i); err != nil {
 					slog.Error("failed to handle command", slog.Any("err", err))
@@ -40,9 +47,12 @@ func main() {
 	}
 	defer session.Close()
 
-	for _, c := range commands {
+	for _, c := range commands.Commands {
 		if _, err = session.ApplicationCommandCreate(session.State.User.ID, "", c.Command); err != nil {
-			slog.Error("failed to create command", slog.String("command", c.Command.Name), slog.Any("err", err))
+			slog.Error("failed to create command",
+				slog.String("command", c.Command.Name),
+				slog.Any("err", err),
+			)
 		}
 	}
 

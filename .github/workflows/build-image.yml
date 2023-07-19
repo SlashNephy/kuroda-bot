@@ -2,10 +2,8 @@ name: 'Build Image'
 
 on:
   push:
-    paths-ignore:
-      - '**.md'
-    branches-ignore:
-      - 'renovate/**'
+    paths:
+      - 'packages/bot/**'
 
   release:
     types:
@@ -25,3 +23,4 @@ jobs:
     with:
       image-name: ghcr.io/slashnephy/kuroda-bot
       image-platforms: linux/amd64
+      context: packages/bot
