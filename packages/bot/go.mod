@@ -6,7 +6,7 @@ require (
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/joho/godotenv v1.5.1
-	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1
+	golang.org/x/exp v0.0.0-20230725012225-302865e7556b
 )
 
 require (
