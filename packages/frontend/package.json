@@ -1,0 +1,46 @@
+{
+  "name": "pages",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "format": "concurrently -n format: -m 1 'yarn:format:*'",
+    "format:eslint": "yarn lint:eslint --fix",
+    "format:prettier": "yarn lint:prettier --write",
+    "lint": "concurrently -n lint: 'yarn:lint:*'",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier --check ."
+  },
+  "dependencies": {
+    "@emotion/react": "11.11.1",
+    "@emotion/server": "11.11.0",
+    "@mantine/core": "6.0.17",
+    "@mantine/hooks": "6.0.17",
+    "@mantine/next": "6.0.17",
+    "next": "13.4.12",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@slashnephy/eslint-config": "1.0.5",
+    "@slashnephy/prettier-config": "0.1.25",
+    "@types/node": "20.4.5",
+    "@types/react": "18.2.17",
+    "@types/react-dom": "18.2.7",
+    "concurrently": "8.2.0",
+    "eslint": "8.45.0",
+    "prettier": "2.8.8",
+    "typescript": "5.1.6"
+  },
+  "packageManager": "yarn@3.6.1",
+  "eslintConfig": {
+    "extends": [
+      "@slashnephy/eslint-config"
+    ],
+    "rules": {
+      "react-refresh/only-export-components": "off"
+    }
+  }
+}
