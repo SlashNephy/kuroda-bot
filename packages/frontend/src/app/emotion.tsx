@@ -16,6 +16,7 @@ export default function RootStyleRegistry({
   useServerInsertedHTML(() => (
     <style
       dangerouslySetInnerHTML={{
+        // eslint-disable-next-line @typescript-eslint/naming-convention,xss/no-mixed-html
         __html: Object.values(cache.inserted).join(' '),
       }}
       data-emotion={`${cache.key} ${Object.keys(cache.inserted).join(' ')}`}
