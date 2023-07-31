@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/caarlos0/env/v8"
+	"github.com/caarlos0/env/v9"
 	_ "github.com/joho/godotenv/autoload"
 )
 
