@@ -1,9 +1,8 @@
-import { Inter } from 'next/font/google'
 import React from 'react'
 
 import type { Metadata } from 'next'
 
-const inter = Inter({ subsets: ['latin'] })
+import RootStyleRegistry from '@/app/emotion.tsx'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,7 +16,9 @@ export default function RootLayout({
 }): React.JSX.Element {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>
+        <RootStyleRegistry>{children}</RootStyleRegistry>
+      </body>
     </html>
   )
 }

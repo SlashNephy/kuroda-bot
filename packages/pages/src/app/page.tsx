@@ -1,11 +1,7 @@
 import React from 'react'
 
-export const runtime = 'edge'
+import { Main } from '@/app/main.tsx'
 
-export default function Home(): React.JSX.Element {
-  return (
-    <main>
-      <p>kuroda-bot</p>
-    </main>
-  )
+export default function Page(): React.JSX.Element {
+  return <Main />
 }
