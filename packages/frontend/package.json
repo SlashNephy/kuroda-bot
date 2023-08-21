@@ -19,7 +19,7 @@
     "@mantine/core": "6.0.19",
     "@mantine/hooks": "6.0.19",
     "@mantine/next": "6.0.19",
-    "next": "13.4.13",
+    "next": "13.4.19",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
