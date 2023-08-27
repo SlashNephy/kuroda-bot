@@ -10,6 +10,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)(?:\s*(.+))?$`)
+
 var summary = &DiscordCommand{
 	Command: &discordgo.ApplicationCommand{
 		Name:        "summary",
@@ -32,7 +34,6 @@ var summary = &DiscordCommand{
 			Label  string
 		}
 		debts := map[string][]DebtData{}
-		var messageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)(?:\s*(.+))?$`)
 
 		// コマンドが実行されたチャンネルでメッセージを全件取得する
 		var page int
@@ -54,7 +55,7 @@ var summary = &DiscordCommand{
 
 				// 改行ごとに借金フォーマットを探す
 				for _, line := range strings.Split(m.Content, "\n") {
-					match := messageRegex.FindStringSubmatch(line)
+					match := MessageRegex.FindStringSubmatch(line)
 					if len(match) == 0 {
 						continue
 					}

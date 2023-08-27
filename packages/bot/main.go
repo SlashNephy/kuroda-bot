@@ -14,12 +14,7 @@ import (
 )
 
 func main() {
-	cfg, err := config.LoadConfig()
-	if err != nil {
-		panic(err)
-	}
-
-	session, err := discordgo.New(fmt.Sprintf("Bot %s", cfg.DiscordBotToken))
+	session, err := discordgo.New(fmt.Sprintf("Bot %s", config.ApplicationConfig.DiscordBotToken))
 	if err != nil {
 		panic(err)
 	}

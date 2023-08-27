@@ -6,7 +6,18 @@ import (
 )
 
 type Config struct {
-	DiscordBotToken string `env:"DISCORD_BOT_TOKEN"`
+	DiscordBotToken string   `env:"DISCORD_BOT_TOKEN,required"`
+	ChannelIDs      []string `env:"CHANNEL_IDS" envSeparator:","`
+}
+
+var ApplicationConfig *Config
+
+func init() {
+	var err error
+	ApplicationConfig, err = LoadConfig()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func LoadConfig() (*Config, error) {
