@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	DiscordBotToken string   `env:"DISCORD_BOT_TOKEN,required"`
-	ChannelIDs      []string `env:"CHANNEL_IDS" envSeparator:","`
+	DiscordBotToken       string   `env:"DISCORD_BOT_TOKEN,required"`
+	WatchChannelIDs       []string `env:"WATCH_CHANNEL_IDS" envSeparator:","`
+	ConversationChannelID string   `env:"CONVERSATION_CHANNEL_ID"`
 }
 
 var ApplicationConfig *Config
