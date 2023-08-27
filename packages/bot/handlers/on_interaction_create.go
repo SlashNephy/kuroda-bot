@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"log/slog"
+
 	"github.com/bwmarrin/discordgo"
-	"golang.org/x/exp/slog"
 
 	"github.com/SlashNephy/kuroda-bot/commands"
 )

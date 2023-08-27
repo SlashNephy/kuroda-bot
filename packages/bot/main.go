@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"os/signal"
 
 	"github.com/bwmarrin/discordgo"
-	"golang.org/x/exp/slog"
 
 	"github.com/SlashNephy/kuroda-bot/commands"
 	"github.com/SlashNephy/kuroda-bot/config"

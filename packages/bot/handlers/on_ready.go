@@ -1,8 +1,9 @@
 package handlers
 
 import (
+	"log/slog"
+
 	"github.com/bwmarrin/discordgo"
-	"golang.org/x/exp/slog"
 )
 
 var onReady = func(s *discordgo.Session, r *discordgo.Ready) {

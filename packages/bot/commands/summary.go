@@ -2,12 +2,12 @@ package commands
 
 import (
 	"fmt"
+	"log/slog"
 	"regexp"
 	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"golang.org/x/exp/slog"
 )
 
 var summary = &DiscordCommand{
