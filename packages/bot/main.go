@@ -10,6 +10,7 @@ import (
 
 	"github.com/SlashNephy/kuroda-bot/commands"
 	"github.com/SlashNephy/kuroda-bot/config"
+	"github.com/SlashNephy/kuroda-bot/handlers"
 )
 
 func main() {
@@ -23,24 +24,9 @@ func main() {
 		panic(err)
 	}
 
-	session.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
-		slog.Info("successfully logged in",
-			slog.String("username", s.State.User.Username),
-			slog.String("discriminator", s.State.User.Discriminator),
-		)
-	})
-
-	session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-		for _, c := range commands.Commands {
-			if c.Command.Name == i.ApplicationCommandData().Name {
-				if err = c.Handler(s, i); err != nil {
-					slog.Error("failed to handle command", slog.Any("err", err))
-				}
-
-				return
-			}
-		}
-	})
+	for _, handler := range handlers.Handlers {
+		session.AddHandler(handler)
+	}
 
 	if err = session.Open(); err != nil {
 		panic(err)
