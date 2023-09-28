@@ -710,9 +710,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slashnephy/eslint-config@npm:2.0.5":
-  version: 2.0.5
-  resolution: "@slashnephy/eslint-config@npm:2.0.5"
+"@slashnephy/eslint-config@npm:2.0.8":
+  version: 2.0.8
+  resolution: "@slashnephy/eslint-config@npm:2.0.8"
   dependencies:
     "@emotion/eslint-plugin": 11.11.0
     "@next/eslint-plugin-next": 13.4.12
@@ -756,7 +756,7 @@ __metadata:
     yaml-eslint-parser: 1.2.2
   peerDependencies:
     eslint: ^8
-  checksum: fcb6507809276ac4d9cdeb949601adcd54f3747867723199599eb2e5a71c33848cf8b83b02c9bd9d2baea1d03e3dbc95cdeefed50f19533471327eb6c37ce89f
+  checksum: 45ffb09d0d3e03152682ec5aa26873ddc7f367fab18d1f417a2c6b91927f5e8bb48ef27ab65ac6e3fe6e29848f3b8134d6c5a569cfe64eb20fd4eae9f3bb2dc7
   languageName: node
   linkType: hard
 
@@ -4128,7 +4128,7 @@ __metadata:
     "@mantine/core": 6.0.21
     "@mantine/hooks": 6.0.21
     "@mantine/next": 6.0.21
-    "@slashnephy/eslint-config": 2.0.5
+    "@slashnephy/eslint-config": 2.0.8
     "@slashnephy/prettier-config": 1.0.3
     "@types/node": 20.6.3
     "@types/react": 18.2.22
