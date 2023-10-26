@@ -24,7 +24,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@slashnephy/eslint-config": "2.0.45",
+    "@slashnephy/eslint-config": "2.0.46",
     "@slashnephy/prettier-config": "1.0.31",
     "@types/node": "20.8.7",
     "@types/react": "18.2.31",
