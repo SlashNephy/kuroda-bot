@@ -46,6 +46,7 @@ var onMessageCreate = func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		dest, err = s.Channel(config.ApplicationConfig.ConversationChannelID)
 		if err != nil {
 			slog.Error("failed to get destination channel", slog.Any("err", err))
+			return
 		}
 	}
 
