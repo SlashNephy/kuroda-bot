@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/bwmarrin/discordgo v0.27.1
+	github.com/caarlos0/env/v10 v10.0.0
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/joho/godotenv v1.5.1
 )
