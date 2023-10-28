@@ -10,7 +10,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)(?:\s*(.+))?$`)
+var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(-?[\d,]+)(?:\s*(.+))?$`)
 
 var summary = &DiscordCommand{
 	Command: &discordgo.ApplicationCommand{
