@@ -812,7 +812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:18.2.31":
+"@types/react@npm:*":
   version: 18.2.31
   resolution: "@types/react@npm:18.2.31"
   dependencies:
@@ -820,6 +820,17 @@ __metadata:
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 8/b11be8e39174d3303e308461400889e353e422d22b01d09795b2c35b7b99d5351716503d9ec5c58e4c2c871249603fa52840d45a34fb5901dd7a26e06129c716
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.33":
+  version: 18.2.33
+  resolution: "@types/react@npm:18.2.33"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    "@types/scheduler": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: d3392785660d78121541403a5d1da57dc79e8ce402769251a626aa06a6886a6aaead868a01ee473661380ddd4ac79743de78853d69f652544da191d435f78afb
   languageName: node
   linkType: hard
 
@@ -3901,7 +3912,7 @@ __metadata:
     "@slashnephy/eslint-config": "npm:2.0.47"
     "@slashnephy/prettier-config": "npm:1.0.32"
     "@types/node": "npm:20.8.9"
-    "@types/react": "npm:18.2.31"
+    "@types/react": "npm:18.2.33"
     "@types/react-dom": "npm:18.2.14"
     concurrently: "npm:8.2.2"
     eslint: "npm:8.52.0"
