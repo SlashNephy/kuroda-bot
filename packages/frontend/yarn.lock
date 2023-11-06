@@ -746,12 +746,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slashnephy/prettier-config@npm:1.0.36":
-  version: 1.0.36
-  resolution: "@slashnephy/prettier-config@npm:1.0.36"
+"@slashnephy/prettier-config@npm:1.0.37":
+  version: 1.0.37
+  resolution: "@slashnephy/prettier-config@npm:1.0.37"
   peerDependencies:
     prettier: ^3
-  checksum: ff7f4c869d4358b97824476231d540fb4f8d3418c83f55dbeae58aeb28b2622bf956ca04468ec2ee2832f6b784fbf64946d33707d54e4b29ba3663ce88aad5e0
+  checksum: f507f85ef21e68a6340b3aa09cf05d949b1963a48172faa3a96da67c59af6f4613ef1a71f0856caa601c27c8bded6fe5221ebd9f668818a599e8c443a977eac6
   languageName: node
   linkType: hard
 
@@ -3853,7 +3853,7 @@ __metadata:
     "@mantine/hooks": "npm:6.0.21"
     "@mantine/next": "npm:6.0.21"
     "@slashnephy/eslint-config": "npm:2.0.53"
-    "@slashnephy/prettier-config": "npm:1.0.36"
+    "@slashnephy/prettier-config": "npm:1.0.37"
     "@types/node": "npm:20.8.10"
     "@types/react": "npm:18.2.34"
     "@types/react-dom": "npm:18.2.14"
