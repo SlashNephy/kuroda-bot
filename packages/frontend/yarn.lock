@@ -696,9 +696,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@slashnephy/eslint-config@npm:2.0.52":
-  version: 2.0.52
-  resolution: "@slashnephy/eslint-config@npm:2.0.52"
+"@slashnephy/eslint-config@npm:2.0.53":
+  version: 2.0.53
+  resolution: "@slashnephy/eslint-config@npm:2.0.53"
   dependencies:
     "@emotion/eslint-plugin": "npm:11.11.0"
     "@next/eslint-plugin-next": "npm:13.5.6"
@@ -735,14 +735,14 @@ __metadata:
     eslint-plugin-tsdoc: "npm:0.2.17"
     eslint-plugin-unused-imports: "npm:3.0.0"
     eslint-plugin-userscripts: "npm:0.4.0"
-    eslint-plugin-vitest: "npm:0.3.8"
+    eslint-plugin-vitest: "npm:0.3.9"
     eslint-plugin-xss: "npm:0.1.12"
     eslint-plugin-yml: "npm:1.10.0"
     typescript: "npm:5.2.2"
     yaml-eslint-parser: "npm:1.2.2"
   peerDependencies:
     eslint: ^8
-  checksum: 461da9e79f31f6d5a2ecd527ab0505ff262789dabf777ffeb605207f2705ca6f7ab217fdb69a45d6c79844616b9989b5bcc7af009d2c53f5ef0be6225fdbf5dc
+  checksum: a1b9221b9644e2eade4a59e8ac500cdf5f1b083d3eddce3d4fc0a31baec1e85f27bc52416b145d258d209a7fb7620ef87b85d8a5c0b665c58d4641a4a0c5f487
   languageName: node
   linkType: hard
 
@@ -985,7 +985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/utils@npm:6.9.1, @typescript-eslint/utils@npm:^6.0.0, @typescript-eslint/utils@npm:^6.7.5":
+"@typescript-eslint/utils@npm:6.9.1, @typescript-eslint/utils@npm:^6.0.0, @typescript-eslint/utils@npm:^6.9.1":
   version: 6.9.1
   resolution: "@typescript-eslint/utils@npm:6.9.1"
   dependencies:
@@ -2373,18 +2373,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-vitest@npm:0.3.8":
-  version: 0.3.8
-  resolution: "eslint-plugin-vitest@npm:0.3.8"
+"eslint-plugin-vitest@npm:0.3.9":
+  version: 0.3.9
+  resolution: "eslint-plugin-vitest@npm:0.3.9"
   dependencies:
-    "@typescript-eslint/utils": "npm:^6.7.5"
+    "@typescript-eslint/utils": "npm:^6.9.1"
   peerDependencies:
     eslint: ">=8.0.0"
     vitest: "*"
   peerDependenciesMeta:
     "@typescript-eslint/eslint-plugin":
       optional: true
-  checksum: 85df9e7d90bbbbff68d549155595884544c0507d73f7934aa69232d8d45b543e0e6b20422b611e73b47734381a40ac5eab54ae5d2a39d4cc11f4cdb3119e0ff8
+    vitest:
+      optional: true
+  checksum: 003f0dfefa7b5c67f78d098807d4bbb9952bd12bc6ebc839db27614c78ba8690a4cf2a67f49568aafe0100ca8914e41f9aac6a912890d59d49aa87e6f2097d08
   languageName: node
   linkType: hard
 
@@ -3850,7 +3852,7 @@ __metadata:
     "@mantine/core": "npm:6.0.21"
     "@mantine/hooks": "npm:6.0.21"
     "@mantine/next": "npm:6.0.21"
-    "@slashnephy/eslint-config": "npm:2.0.52"
+    "@slashnephy/eslint-config": "npm:2.0.53"
     "@slashnephy/prettier-config": "npm:1.0.36"
     "@types/node": "npm:20.8.10"
     "@types/react": "npm:18.2.34"
