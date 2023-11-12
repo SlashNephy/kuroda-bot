@@ -2,8 +2,6 @@ name: 'Build Image'
 
 on:
   push:
-    paths:
-      - 'packages/bot/**'
 
   release:
     types:
@@ -22,5 +20,4 @@ jobs:
     uses: SlashNephy/.github/.github/workflows/docker-build.yml@master
     with:
       image-name: ghcr.io/slashnephy/kuroda-bot
-      image-platforms: linux/amd64
-      context: packages/bot
+      image-platforms: linux/amd64,linux/arm64

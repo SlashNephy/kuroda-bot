@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'master'
-    paths:
-      - 'packages/bot/**'
 
   pull_request:
     types:
@@ -22,12 +20,9 @@ jobs:
       contents: 'read'
     with:
       task: 'build'
-      working-directory: 'packages/bot'
 
   lint:
     uses: SlashNephy/.github/.github/workflows/go-lint.yml@master
     permissions:
       contents: 'read'
       pull-requests: 'write'
-    with:
-      working-directory: 'packages/bot'
