@@ -7,6 +7,7 @@ require (
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.38.1
+	golang.org/x/sync v0.5.0
 )
 
 require (

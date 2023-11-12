@@ -31,6 +31,12 @@ var onMessageCreate = func(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// 借金フォーマットである場合は許可
 	if commands.MessageRegex.MatchString(m.Content) {
+		// メッセージが投稿されたときにサマリーを投稿する
+		if err := PostSummaryMessage(s, m.ChannelID); err != nil {
+			slog.Error("failed to post summary message", slog.Any("err", err))
+			return
+		}
+
 		return
 	}
 
@@ -127,4 +133,19 @@ func effectiveName(user *discordgo.User, member *discordgo.Member) string {
 	}
 
 	return fmt.Sprintf("%s (%s)", member.Nick, user.Username)
+}
+
+func PostSummaryMessage(s *discordgo.Session, channelID string) error {
+	messages, err := commands.FetchMessages(s, channelID)
+	if err != nil {
+		return err
+	}
+
+	embed, err := commands.RenderSummaryMessageEmbed(messages)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.ChannelMessageSendEmbed(channelID, embed)
+	return err
 }

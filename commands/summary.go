@@ -9,6 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/samber/lo"
+	"golang.org/x/sync/errgroup"
 )
 
 var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(-?[\d,]+)(?:\s*(.+))?$`)
@@ -30,54 +31,18 @@ var summary = &DiscordCommand{
 			return err
 		}
 
-		summaries, err := CalculateSummaries(s, i.ChannelID)
+		messages, err := FetchMessages(s, i.ChannelID)
 		if err != nil {
 			return err
 		}
 
-		if len(summaries) == 0 {
-			_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
-				Embeds: &[]*discordgo.MessageEmbed{
-					{
-						Description: "借金の履歴は見つかりませんでした。",
-						Color:       0xD64B4B,
-					},
-				},
-			})
+		embed, err := RenderSummaryMessageEmbed(messages)
+		if err != nil {
 			return err
 		}
 
-		// ユーザーごとに借金の合計を表示
-		var fields []string
-		for _, summary := range summaries {
-			sum := lo.SumBy(summary.Debts, func(debt *Debt) int {
-				return debt.Amount
-			})
-
-			var labels []string
-			for _, debt := range summary.Debts {
-				if debt.Label == "" {
-					continue
-				}
-
-				labels = append(labels, debt.Label)
-			}
-
-			if len(labels) > 0 {
-				fields = append(fields, fmt.Sprintf("%s\n%d (%s)", summary.User, sum, strings.Join(labels, ", ")))
-			} else {
-				fields = append(fields, fmt.Sprintf("%s\n%d", summary.User, sum))
-			}
-		}
-
 		_, err = s.InteractionResponseEdit(i.Interaction, &discordgo.WebhookEdit{
-			Embeds: &[]*discordgo.MessageEmbed{
-				{
-					// Fields を使うとメンションが反映されない
-					Description: strings.Join(fields, "\n"),
-					Color:       0xD64B4B,
-				},
-			},
+			Embeds: &[]*discordgo.MessageEmbed{embed},
 		})
 		return err
 	},
@@ -89,85 +54,175 @@ type Summary struct {
 }
 
 type Debt struct {
-	Amount  int
+	Amount  int64
 	Label   string
 	Message *discordgo.Message
 }
 
-func CalculateSummaries(s *discordgo.Session, channelID string) ([]*Summary, error) {
-	summaries := map[*discordgo.User][]*Debt{}
+const maxPage = 5
 
-	// コマンドが実行されたチャンネルでメッセージを全件取得する
+func FetchMessages(s *discordgo.Session, channelID string) ([]*discordgo.Message, error) {
+	var messages []*discordgo.Message
 	var page int
 	var beforeID string
-	for page < 5 {
-		messages, err := s.ChannelMessages(channelID, 100, beforeID, "", "")
+	for page < maxPage {
+		msgs, err := s.ChannelMessages(channelID, 100, beforeID, "", "")
 		if err != nil {
 			return nil, err
 		}
 
-		if len(messages) == 0 {
+		if len(msgs) == 0 {
 			break
 		}
 
-		for _, message := range messages {
-			if len(message.Mentions) == 0 {
-				continue
-			}
-
-			// 改行ごとに借金フォーマットを探す
-			for _, line := range strings.Split(message.Content, "\n") {
-				match := MessageRegex.FindStringSubmatch(line)
-				if len(match) == 0 {
-					continue
-				}
-
-				// カンマ消す
-				s := strings.Replace(match[1], ",", "", -1)
-
-				// 借金の金額
-				amount, err := strconv.Atoi(s)
-				if err != nil {
-					slog.Warn("invalid amount", slog.String("content", line))
-					continue
-				}
-
-				// 借金のラベル
-				var label string
-				if len(match) == 3 {
-					label = strings.TrimSpace(match[2])
-				}
-
-				slog.Info("found message",
-					slog.Int("amount", amount),
-					slog.String("label", label),
-					slog.Any("mentions", message.Mentions),
-					slog.String("content", line),
-				)
-
-				for _, user := range message.Mentions {
-					// 行にメンションが含まれている場合だけ集計
-					if !strings.Contains(line, user.Mention()) {
-						continue
-					}
-
-					summaries[user] = append(summaries[user], &Debt{
-						Amount:  amount,
-						Label:   label,
-						Message: message,
-					})
-				}
-			}
-		}
-
+		messages = append(messages, msgs...)
 		beforeID = messages[len(messages)-1].ID
 		page++
 	}
 
-	return lo.MapToSlice(summaries, func(user *discordgo.User, debts []*Debt) *Summary {
+	defer func() {
+		slog.Info("clean up messages", slog.Int("count", len(messages)))
+
+		if err := cleanupMessages(s, messages); err != nil {
+			slog.Error("failed to clean up messages", slog.Any("err", err))
+		}
+	}()
+
+	return messages, nil
+}
+
+func cleanupMessages(s *discordgo.Session, messages []*discordgo.Message) error {
+	var messageIDs []string
+	for _, message := range messages {
+		if message.Author.ID != s.State.User.ID {
+			continue
+		}
+
+		messageIDs = append(messageIDs, message.ID)
+	}
+
+	if len(messageIDs) == 0 {
+		return nil
+	}
+
+	var eg errgroup.Group
+	for _, messageID := range messageIDs {
+		messageID := messageID
+		eg.Go(func() error {
+			// すべて同じチャンネルから送信されたメッセージであると仮定している
+			return s.ChannelMessageDelete(messages[0].ChannelID, messageID)
+		})
+	}
+
+	return eg.Wait()
+}
+
+func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
+	usersByID := map[string]*discordgo.User{}
+	summariesByUserID := map[string][]*Debt{}
+
+	for _, message := range messages {
+		if message.Author.Bot {
+			continue
+		}
+
+		if len(message.Mentions) == 0 {
+			continue
+		}
+
+		// 改行ごとに借金フォーマットを探す
+		for _, line := range strings.Split(message.Content, "\n") {
+			match := MessageRegex.FindStringSubmatch(line)
+			if len(match) == 0 {
+				continue
+			}
+
+			// カンマ消す
+			s := strings.Replace(match[1], ",", "", -1)
+
+			// 借金の金額
+			amount, err := strconv.ParseInt(s, 10, 64)
+			if err != nil {
+				slog.Warn("invalid amount", slog.String("content", line))
+				continue
+			}
+
+			// 借金のラベル
+			var label string
+			if len(match) == 3 {
+				label = strings.TrimSpace(match[2])
+			}
+
+			slog.Info("found message",
+				slog.Int64("amount", amount),
+				slog.String("label", label),
+				slog.Any("mentions", message.Mentions),
+				slog.String("content", line),
+			)
+
+			for _, user := range message.Mentions {
+				// 行にメンションが含まれている場合だけ集計
+				if !strings.Contains(line, user.Mention()) {
+					continue
+				}
+
+				usersByID[user.ID] = user
+				summariesByUserID[user.ID] = append(summariesByUserID[user.ID], &Debt{
+					Amount:  amount,
+					Label:   label,
+					Message: message,
+				})
+			}
+		}
+	}
+
+	return lo.MapToSlice(summariesByUserID, func(userID string, debts []*Debt) *Summary {
 		return &Summary{
-			User:  user,
+			User:  usersByID[userID],
 			Debts: debts,
 		}
 	}), nil
+}
+
+func RenderSummaryMessageEmbed(messages []*discordgo.Message) (*discordgo.MessageEmbed, error) {
+	summaries, err := calculateSummaries(messages)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(summaries) == 0 {
+		return &discordgo.MessageEmbed{
+			Description: "借金の履歴は見つかりませんでした。",
+			Color:       0xD64B4B,
+		}, nil
+	}
+
+	// ユーザーごとに借金の合計を表示
+	var fields []string
+	for _, summary := range summaries {
+		sum := lo.SumBy(summary.Debts, func(debt *Debt) int64 {
+			return debt.Amount
+		})
+
+		var labels []string
+		for _, debt := range summary.Debts {
+			if debt.Label == "" {
+				continue
+			}
+
+			labels = append(labels, debt.Label)
+		}
+
+		if len(labels) > 0 {
+			fields = append(fields, fmt.Sprintf("%s\n%d (%s)", summary.User.Mention(), sum, strings.Join(labels, ", ")))
+		} else {
+			fields = append(fields, fmt.Sprintf("%s\n%d", summary.User.Mention(), sum))
+		}
+	}
+
+	return &discordgo.MessageEmbed{
+		// Fields を使うとメンションが反映されない
+		Description: strings.Join(fields, "\n"),
+		Color:       0xD64B4B,
+	}, nil
 }
