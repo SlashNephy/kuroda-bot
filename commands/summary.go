@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -51,6 +52,7 @@ var summary = &DiscordCommand{
 type Summary struct {
 	User  *discordgo.User
 	Debts []*Debt
+	Sum   int64
 }
 
 type Debt struct {
@@ -176,12 +178,20 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 		}
 	}
 
-	return lo.MapToSlice(summariesByUserID, func(userID string, debts []*Debt) *Summary {
+	summaries := lo.MapToSlice(summariesByUserID, func(userID string, debts []*Debt) *Summary {
 		return &Summary{
 			User:  usersByID[userID],
 			Debts: debts,
+			Sum: lo.SumBy(debts, func(debt *Debt) int64 {
+				return debt.Amount
+			}),
 		}
-	}), nil
+	})
+	// Sum の降順でソートする
+	sort.SliceStable(summaries, func(i, j int) bool {
+		return summaries[i].Sum > summaries[j].Sum
+	})
+	return summaries, nil
 }
 
 func RenderSummaryMessageEmbed(messages []*discordgo.Message) (*discordgo.MessageEmbed, error) {
@@ -200,10 +210,6 @@ func RenderSummaryMessageEmbed(messages []*discordgo.Message) (*discordgo.Messag
 	// ユーザーごとに借金の合計を表示
 	var fields []string
 	for _, summary := range summaries {
-		sum := lo.SumBy(summary.Debts, func(debt *Debt) int64 {
-			return debt.Amount
-		})
-
 		var labels []string
 		for _, debt := range summary.Debts {
 			if debt.Label == "" {
@@ -214,9 +220,9 @@ func RenderSummaryMessageEmbed(messages []*discordgo.Message) (*discordgo.Messag
 		}
 
 		if len(labels) > 0 {
-			fields = append(fields, fmt.Sprintf("%s\n%d (%s)", summary.User.Mention(), sum, strings.Join(labels, ", ")))
+			fields = append(fields, fmt.Sprintf("%s\n%d (%s)", summary.User.Mention(), summary.Sum, strings.Join(labels, ", ")))
 		} else {
-			fields = append(fields, fmt.Sprintf("%s\n%d", summary.User.Mention(), sum))
+			fields = append(fields, fmt.Sprintf("%s\n%d", summary.User.Mention(), summary.Sum))
 		}
 	}
 
