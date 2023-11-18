@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"slices"
 	"sync"
 
 	"github.com/bwmarrin/discordgo"
+
+	"github.com/SlashNephy/kuroda-bot/config"
 )
 
 type MessageCache struct {
@@ -12,6 +15,11 @@ type MessageCache struct {
 }
 
 func (c *MessageCache) OnMessageCreate(_ *discordgo.Session, m *discordgo.MessageCreate) {
+	// 対象のチャンネルではない
+	if !slices.Contains(config.ApplicationConfig.WatchChannelIDs, m.ChannelID) {
+		return
+	}
+
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -19,6 +27,11 @@ func (c *MessageCache) OnMessageCreate(_ *discordgo.Session, m *discordgo.Messag
 }
 
 func (c *MessageCache) OnMessageUpdate(_ *discordgo.Session, m *discordgo.MessageUpdate) {
+	// 対象のチャンネルではない
+	if !slices.Contains(config.ApplicationConfig.WatchChannelIDs, m.ChannelID) {
+		return
+	}
+
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
