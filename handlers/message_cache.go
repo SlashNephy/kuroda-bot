@@ -34,4 +34,6 @@ func (c *MessageCache) Pop(messageID string) (*discordgo.Message, bool) {
 	return message, ok
 }
 
-var messageCache = &MessageCache{}
+var messageCache = &MessageCache{
+	cache: map[string]*discordgo.Message{},
+}
