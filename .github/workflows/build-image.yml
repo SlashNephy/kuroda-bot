@@ -21,3 +21,5 @@ jobs:
     with:
       image-name: ghcr.io/slashnephy/kuroda-bot
       image-platforms: linux/amd64,linux/arm64
+    secrets:
+      dispatch-github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
