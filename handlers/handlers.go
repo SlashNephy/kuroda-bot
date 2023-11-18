@@ -4,5 +4,9 @@ var Handlers = []any{
 	onReady,
 	onInteractionCreate,
 	onMessageCreate,
-	onMessageUpdate,
+	messageCache.OnMessageCreate,
+	messageCache.OnMessageUpdate,
+	postSummaryMessage.OnMessageCreate,
+	postSummaryMessage.OnMessageUpdate,
+	postSummaryMessage.OnMessageDelete,
 }
