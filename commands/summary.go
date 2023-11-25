@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(-?[\d,]+)(?:\s*(.+))?$`)
+var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(-?[\d,]+)円?(?:\s*(.+))?$`)
 
 var summary = &DiscordCommand{
 	Command: &discordgo.ApplicationCommand{
