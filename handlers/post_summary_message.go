@@ -64,7 +64,7 @@ func (p *PostSummaryMessage) PostSummaryMessage(s *discordgo.Session, message *d
 		return nil
 	}
 
-	messages, err := commands.FetchMessages(s, message.ChannelID)
+	messages, err := commands.FetchMessages(s, message.ChannelID, true)
 	if err != nil {
 		return err
 	}

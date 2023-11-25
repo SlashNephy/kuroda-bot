@@ -1,5 +1,5 @@
 build:
-	go build -o kuroda-bot ./*.go
+	go build -o kuroda-bot .
 
 run:
-	go run ./*.go
+	go run ./main.go

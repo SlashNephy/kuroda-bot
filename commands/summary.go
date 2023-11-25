@@ -32,7 +32,7 @@ var summary = &DiscordCommand{
 			return err
 		}
 
-		messages, err := FetchMessages(s, i.ChannelID)
+		messages, err := FetchMessages(s, i.ChannelID, false)
 		if err != nil {
 			return err
 		}
@@ -63,7 +63,7 @@ type Debt struct {
 
 const maxPage = 5
 
-func FetchMessages(s *discordgo.Session, channelID string) ([]*discordgo.Message, error) {
+func FetchMessages(s *discordgo.Session, channelID string, cleanup bool) ([]*discordgo.Message, error) {
 	var messages []*discordgo.Message
 	var page int
 	var beforeID string
@@ -83,6 +83,10 @@ func FetchMessages(s *discordgo.Session, channelID string) ([]*discordgo.Message
 	}
 
 	defer func() {
+		if !cleanup {
+			return
+		}
+
 		slog.Info("clean up messages", slog.Int("count", len(messages)))
 
 		if err := cleanupMessages(s, messages); err != nil {
