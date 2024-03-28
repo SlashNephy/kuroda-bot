@@ -40,8 +40,8 @@ func (p *PostSummaryMessage) OnMessageDelete(s *discordgo.Session, m *discordgo.
 }
 
 func (p *PostSummaryMessage) shouldPostSummaryMessage(s *discordgo.Session, message *discordgo.Message) bool {
-	// bot は無視
-	if message.Author.Bot {
+	// Webhook / bot は無視
+	if message.Author == nil || message.Author.Bot {
 		return false
 	}
 
