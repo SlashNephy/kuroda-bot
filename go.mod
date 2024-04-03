@@ -3,7 +3,7 @@ module github.com/SlashNephy/kuroda-bot
 go 1.21
 
 require (
-	github.com/bwmarrin/discordgo v0.27.1
+	github.com/bwmarrin/discordgo v0.28.1
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.39.0
