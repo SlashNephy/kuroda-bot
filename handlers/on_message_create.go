@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/samber/lo"
 
 	"github.com/SlashNephy/kuroda-bot/commands"
 	"github.com/SlashNephy/kuroda-bot/config"
@@ -29,8 +30,11 @@ var onMessageCreate = func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// 借金フォーマットである場合は許可
-	if commands.MessageRegex.MatchString(m.Content) {
+	// 行ごとに検査して、すべて正しい借金フォーマットである場合は許可
+	ok := lo.EveryBy(strings.Split(m.Content, "\n"), func(line string) bool {
+		return commands.MessageRegex.MatchString(line)
+	})
+	if ok {
 		return
 	}
 
