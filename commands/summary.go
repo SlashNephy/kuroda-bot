@@ -13,7 +13,7 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(-?[\d,]+)円?(?:\s*(.+))?$`)
+var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)円?(?:\s*(.+))?$`)
 
 var summary = &DiscordCommand{
 	Command: &discordgo.ApplicationCommand{
@@ -52,11 +52,11 @@ var summary = &DiscordCommand{
 type Summary struct {
 	User  *discordgo.User
 	Debts []*Debt
-	Sum   int64
+	Sum   uint64
 }
 
 type Debt struct {
-	Amount  int64
+	Amount  uint64
 	Label   string
 	Message *discordgo.Message
 }
@@ -147,7 +147,7 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 			s := strings.Replace(match[1], ",", "", -1)
 
 			// 借金の金額
-			amount, err := strconv.ParseInt(s, 10, 64)
+			amount, err := strconv.ParseUint(s, 10, 64)
 			if err != nil {
 				slog.Warn("invalid amount", slog.String("content", line))
 				continue
@@ -160,7 +160,7 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 			}
 
 			slog.Info("found message",
-				slog.Int64("amount", amount),
+				slog.Uint64("amount", amount),
 				slog.String("label", label),
 				slog.Any("mentions", message.Mentions),
 				slog.String("content", line),
@@ -186,7 +186,7 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 		return &Summary{
 			User:  usersByID[userID],
 			Debts: debts,
-			Sum: lo.SumBy(debts, func(debt *Debt) int64 {
+			Sum: lo.SumBy(debts, func(debt *Debt) uint64 {
 				return debt.Amount
 			}),
 		}
