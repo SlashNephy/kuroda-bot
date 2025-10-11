@@ -8,7 +8,7 @@ require (
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/joho/godotenv v1.5.1
-	github.com/samber/lo v1.51.0
+	github.com/samber/lo v1.52.0
 	golang.org/x/sync v0.17.0
 )
 
