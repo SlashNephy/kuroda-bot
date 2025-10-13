@@ -2,7 +2,7 @@ module github.com/SlashNephy/kuroda-bot
 
 go 1.24.0
 
-toolchain go1.24.8
+toolchain go1.24.9
 
 require (
 	github.com/bwmarrin/discordgo v0.29.0
