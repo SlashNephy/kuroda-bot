@@ -1,6 +1,6 @@
 module github.com/SlashNephy/kuroda-bot
 
-go 1.24.0
+go 1.25.0
 
 toolchain go1.26.2
 
@@ -9,7 +9,7 @@ require (
 	github.com/caarlos0/env/v11 v11.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.53.0
-	golang.org/x/sync v0.19.0
+	golang.org/x/sync v0.20.0
 )
 
 require (
