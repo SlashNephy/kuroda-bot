@@ -6,7 +6,7 @@ toolchain go1.26.2
 
 require (
 	github.com/bwmarrin/discordgo v0.29.0
-	github.com/caarlos0/env/v11 v11.4.0
+	github.com/caarlos0/env/v11 v11.4.1
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.53.0
 	golang.org/x/sync v0.19.0
