@@ -13,7 +13,41 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-var MessageRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)円?(?:\s*(.+))?$`)
+var (
+	// 「@メンション 金額 メモ」形式
+	amountFirstLineRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)円?(?:\s*(.+))?$`)
+	// 「@メンション メモ 金額」形式 (金額とメモを書き間違えた場合の救済)
+	labelFirstLineRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(.+?)\s+([\d,]+)円?\s*$`)
+)
+
+// ParseDebtLine は 1 行から借金の金額とメモを取り出す。
+// 金額とメモはどちらが先に書かれていてもよいが、金額を含まない行は借金フォーマットとみなさない。
+func ParseDebtLine(line string) (*Debt, bool) {
+	// 「@メンション 100 200」のような曖昧な行では、金額先行として解釈する
+	if match := amountFirstLineRegex.FindStringSubmatch(line); match != nil {
+		return newDebt(match[1], match[2])
+	}
+
+	if match := labelFirstLineRegex.FindStringSubmatch(line); match != nil {
+		return newDebt(match[2], match[1])
+	}
+
+	return nil, false
+}
+
+func newDebt(rawAmount, rawLabel string) (*Debt, bool) {
+	// カンマ消す
+	amount, err := strconv.ParseUint(strings.ReplaceAll(rawAmount, ",", ""), 10, 64)
+	if err != nil {
+		slog.Warn("invalid amount", slog.String("amount", rawAmount))
+		return nil, false
+	}
+
+	return &Debt{
+		Amount: amount,
+		Label:  strings.TrimSpace(rawLabel),
+	}, true
+}
 
 var summary = &DiscordCommand{
 	Command: &discordgo.ApplicationCommand{
@@ -138,30 +172,16 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 
 		// 改行ごとに借金フォーマットを探す
 		for _, line := range strings.Split(message.Content, "\n") {
-			match := MessageRegex.FindStringSubmatch(line)
-			if len(match) == 0 {
+			debt, ok := ParseDebtLine(line)
+			if !ok {
 				continue
 			}
 
-			// カンマ消す
-			s := strings.Replace(match[1], ",", "", -1)
-
-			// 借金の金額
-			amount, err := strconv.ParseUint(s, 10, 64)
-			if err != nil {
-				slog.Warn("invalid amount", slog.String("content", line))
-				continue
-			}
-
-			// 借金のラベル
-			var label string
-			if len(match) == 3 {
-				label = strings.TrimSpace(match[2])
-			}
+			debt.Message = message
 
 			slog.Info("found message",
-				slog.Uint64("amount", amount),
-				slog.String("label", label),
+				slog.Uint64("amount", debt.Amount),
+				slog.String("label", debt.Label),
 				slog.Any("mentions", message.Mentions),
 				slog.String("content", line),
 			)
@@ -173,11 +193,7 @@ func calculateSummaries(messages []*discordgo.Message) ([]*Summary, error) {
 				}
 
 				usersByID[user.ID] = user
-				summariesByUserID[user.ID] = append(summariesByUserID[user.ID], &Debt{
-					Amount:  amount,
-					Label:   label,
-					Message: message,
-				})
+				summariesByUserID[user.ID] = append(summariesByUserID[user.ID], debt)
 			}
 		}
 	}

@@ -32,7 +32,8 @@ var onMessageCreate = func(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	// 行ごとに検査して、すべて正しい借金フォーマットである場合は許可
 	ok := lo.EveryBy(strings.Split(m.Content, "\n"), func(line string) bool {
-		return commands.MessageRegex.MatchString(line)
+		_, ok := commands.ParseDebtLine(line)
+		return ok
 	})
 	if ok {
 		return
@@ -56,9 +57,9 @@ var onMessageCreate = func(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	var content string
 	if dest == nil {
-		content = fmt.Sprintf("%s\n⚠️ 借金フォーマット (`@メンション 金額 メモ`) に従わないメッセージは削除します。\n\n削除されたメッセージ\n```\n%s\n```", m.Author.Mention(), m.Content)
+		content = fmt.Sprintf("%s\n⚠️ 借金フォーマット (`@メンション 金額 メモ` または `@メンション メモ 金額`) に従わないメッセージは削除します。\n\n削除されたメッセージ\n```\n%s\n```", m.Author.Mention(), m.Content)
 	} else {
-		content = fmt.Sprintf("%s\n⚠️ 借金フォーマット (`@メンション 金額 メモ`) に従わないメッセージは削除します。 %s に転送します。", m.Author.Mention(), dest.Mention())
+		content = fmt.Sprintf("%s\n⚠️ 借金フォーマット (`@メンション 金額 メモ` または `@メンション メモ 金額`) に従わないメッセージは削除します。 %s に転送します。", m.Author.Mention(), dest.Mention())
 	}
 
 	sent, err := s.ChannelMessageSendReply(m.ChannelID, content, m.Reference())
