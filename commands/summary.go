@@ -17,7 +17,7 @@ var (
 	// 「@メンション 金額 メモ」形式
 	amountFirstLineRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+([\d,]+)円?(?:\s*(.+))?$`)
 	// 「@メンション メモ 金額」形式 (金額とメモを書き間違えた場合の救済)
-	labelFirstLineRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(.+?)\s+([\d,]+)円?$`)
+	labelFirstLineRegex = regexp.MustCompile(`^(?:<@\d+>\s*)+(.+?)\s+([\d,]+)円?\s*$`)
 )
 
 // ParseDebtLine は 1 行から借金の金額とメモを取り出す。

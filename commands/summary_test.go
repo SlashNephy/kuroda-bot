@@ -62,6 +62,26 @@ func TestParseDebtLine(t *testing.T) {
 			wantLabel:  "焼肉",
 		},
 		{
+			name:       "メモ先行 行末に空白がある",
+			line:       "<@1> 焼肉 3400 ",
+			wantOK:     true,
+			wantAmount: 3400,
+			wantLabel:  "焼肉",
+		},
+		{
+			name:       "金額先行 行末に空白がある",
+			line:       "<@1> 3400 焼肉 ",
+			wantOK:     true,
+			wantAmount: 3400,
+			wantLabel:  "焼肉",
+		},
+		{
+			name:       "金額のみ 行末に空白がある",
+			line:       "<@1> 3400 ",
+			wantOK:     true,
+			wantAmount: 3400,
+		},
+		{
 			name:       "金額先行 数字を含むメモ",
 			line:       "<@1> 30566 (焼肉, ブック, ベスト10, よもだ, スキー)",
 			wantOK:     true,
