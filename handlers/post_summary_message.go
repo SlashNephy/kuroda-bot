@@ -56,7 +56,8 @@ func (p *PostSummaryMessage) shouldPostSummaryMessage(s *discordgo.Session, mess
 	}
 
 	// 借金フォーマットではないのは無視
-	return commands.MessageRegex.MatchString(message.Content)
+	_, ok := commands.ParseDebtLine(message.Content)
+	return ok
 }
 
 func (p *PostSummaryMessage) PostSummaryMessage(s *discordgo.Session, message *discordgo.Message) error {
