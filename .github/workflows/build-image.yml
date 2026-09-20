@@ -17,10 +17,10 @@ permissions:
 
 jobs:
   build:
-    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@6c1e1155e0a1b5aaf975544e23d7ff490511a1d9 # v0.0.6
+    uses: SlashNephy/actions/.github/workflows/build-docker-image.yml@70aa7999543c0745815c8233fd18fc1759748f6c # v1.0.0
     with:
       image-name: ghcr.io/slashnephy/kuroda-bot
       image-platforms: linux/amd64
       dispatch-update-image-digest: true
     secrets:
-      dispatch-github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+      dispatch-app-private-key: ${{ secrets.DISPATCH_APP_PRIVATE_KEY }}
