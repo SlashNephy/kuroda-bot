@@ -6,7 +6,7 @@ toolchain go1.27.3
 
 require (
 	github.com/bwmarrin/discordgo v0.29.0
-	github.com/caarlos0/env/v11 v11.4.1
+	github.com/caarlos0/env/v11 v11.4.2
 	github.com/joho/godotenv v1.5.1
 	github.com/samber/lo v1.53.0
 	github.com/stretchr/testify v1.12.1
